@@ -5,6 +5,18 @@ format: html
 editor: visual
 ---
 
+```{r}
+rm(list=ls())
+```
+
+
+## Loading any packages
+
+```{R}
+#| echo: false
+library(tidyverse)
+```
+
 ## Quarto
 
 Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.

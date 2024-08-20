@@ -1,0 +1,26 @@
+---
+title: "Exercise 2: options in code chunks"
+author: "Felix Moerman"
+format: html
+editor: visual
+---
+
+# Creating initial variables
+Let's create a first variable x, with value 25
+```{r}
+
+x = 25
+```
+
+Then, let's create a second variable y, with value 4
+```{r}
+
+y = 4
+```
+
+# Multiplying the variables
+Now, we'll multiply the variables with each other, and print the result
+```{r}
+print(x*y)
+```
+
