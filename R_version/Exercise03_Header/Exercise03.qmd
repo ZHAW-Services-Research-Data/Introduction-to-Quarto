@@ -1,0 +1,37 @@
+---
+title: "Exercise 3: YAML header"
+author: "Felix Moerman"
+format: html
+editor: visual
+---
+
+## Clearing the memory, and loading the packages
+
+We will start by preparing the document for use. To do so, we will clear the R memory, and import the tidyverse package. This package is a collection of data science tools that are used to manipulate and visualize data. Because we do not care about the output (especially the warnings, that are typically generated, when Tidyverse loads), we ill disable the output of the following code chunk.
+
+```{r}
+#| output: false
+
+# Clear the memory
+rm(list = ls())
+
+# import the tidyverse package
+library(tidyverse)
+```
+
+## Preparing and visualizing the data
+
+Next, we will import the data from the iris dataset, and store it in a dataframe. The data is available in R, so we simply have to load it. We will then quickly print the head of the dataframe, to ensure it looks correct.
+
+```{r}
+data("iris")
+head(iris, 5)
+```
+
+Next, we will use the ggplot2 package, to plot the sepal length to the petal length, while colouring the data by species.
+
+```{r}
+ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
+  geom_point()
+```
+
