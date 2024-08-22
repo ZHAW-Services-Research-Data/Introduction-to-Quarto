@@ -1,6 +1,10 @@
 ---
-title: "Exercise 3: YAML header"
+title: "Exercise 3: YAML header - changed version"
 author: "Felix Moerman"
+date: "08/20/2024"
+date-modified: "08/22/2024"
+abstract: "This exercise guides the user through some of the more commonly used options for the YAML header of a Quarto file. The presented options are a non-exhaustive list of options, that may be useful to know, when creating your own Quarto reports/dashboard/presentations."
+abstract-title: "Summary"
 format: html
 editor: visual
 toc: true
@@ -38,4 +42,3 @@ Next, we will use the ggplot2 package, to plot the sepal length to the petal len
 ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
   geom_point()
 ```
-
