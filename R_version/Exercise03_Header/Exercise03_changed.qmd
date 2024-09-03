@@ -5,7 +5,13 @@ date: "08/20/2024"
 date-modified: "08/22/2024"
 abstract: "This exercise guides the user through some of the more commonly used options for the YAML header of a Quarto file. The presented options are a non-exhaustive list of options, that may be useful to know, when creating your own Quarto reports/dashboard/presentations."
 abstract-title: "Summary"
-format: html
+format: 
+  html:
+    grid: 
+      sidebar-width: 350px
+      body-width: 250px
+      margin-width:	250px
+      gutter-width:	1.5em
 editor: visual
 toc: true
 toc-depth: 3
