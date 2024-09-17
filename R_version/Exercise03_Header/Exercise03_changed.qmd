@@ -23,7 +23,7 @@ csl: "nature.csl"
 
 ## Clearing the memory, and loading the packages
 
-We will start by preparing the document for use. To do so, we will clear the R memory, and import the tidyverse package. This package is a collection of data science tools that are used to manipulate and visualize data. Because we do not care about the output (especially the warnings, that are typically generated, when Tidyverse loads), we ill disable the output of the following code chunk.
+We will start by preparing the document for use. To do so, we will clear the R memory, and import the tidyverse package. This package is a collection of data science tools that are used to manipulate and visualize data. Because we do not care about the output (especially the warnings, that are typically generated, when Tidyverse loads), we will disable the output of the following code chunk.
 
 ```{r}
 #| output: false

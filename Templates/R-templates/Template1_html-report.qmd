@@ -1,0 +1,105 @@
+---
+title: "HTML Report Template"
+author: "Felix Moerman"
+date: last-modified
+date-format: "DD-MM-YYYY"
+title-block-banner:  "darkgrey"
+format: 
+  html:
+    toc: true
+    toc-location: left
+    toc-title: "Table of Contents"
+    smooth-scroll: true
+    fontcolor: "#29588C"
+    mainfont: Calibri
+    monofont: Calibri
+theme: cosmo
+editor: visual
+number-sections: true
+css: styles.css
+bibliography: "example_bibtex.bib"
+csl: "nature.csl"
+abstract: "This template is a quick start for making an HTML report. It includes some basic formatting and visual aspects, as well as an abstract, a table of contents, a bibliography, some graphs, and several code and text blocks. This template is meant as a starting point to either create your own report, or even better your own template, adapted to your needs and tastes, to use in the future."
+---
+
+## Preparing data and displaying it in a table
+### Loading packages
+We will start by loading the necessary R-packages to run this report. Specifically, we will load the "tidyverse" package, which include the ggplot package [@wickham_ggplot2_2016], that we will use for data visualization. In this case, we do not want to see the code, nor the output, after we have finalised the report. Therefore, we will set the `echo` option to `false` for this code chunk, as well as set the output to `false`. 
+
+```{r}
+#| echo: false
+#| output: false
+
+# Load the necessary packages
+library(tidyverse)
+```
+
+
+
+### Preparing the data
+
+In a second step, we will load a dataset to display in this report. For this example, we'll look at the data on the number of students in universities of applied sciences in Switzerland, as published on the website of the Swiss Federal Statistical Office (FSO). The data is available in from [this link](https://dam-api.bfs.admin.ch/hub/api/dam/assets/31826380/master), in case you wanted to download a copy. We will, however, load the data directly into this report. In the following code section, we will simply download the data, and print a quick check to see if there are six columns, and at least 2 rows in the data. We will not print the code itself, as it is not so relevant for the report. The output will tell us however if the data loaded correctly or not.
+
+```{r}
+#| echo: false
+
+# Load the data
+students <- read.csv("https://dam-api.bfs.admin.ch/hub/api/dam/assets/31826380/master")
+
+# Check the data
+if (nrow(students)> 1 & ncol(students) == 6) {
+  print("Data loaded successfully")
+} else {
+  print("Data not loaded successfully")
+}
+
+```
+
+Next, we will have a quick look at the data. To do so, we will display the first 10 rows of the dataset, as well as look at the structure of the data.
+
+```{r}
+# Print the first 10 rows of the data
+head(students, 10)
+
+# Look at the structure of the data
+glimpse(students)
+```
+
+As you can see, the data contains six variables. The first variable (PERIOD), shows us the year the data was collected, and is a text (character) data type. The other remaining types are all numeric, and are encoded variables, showing us the University, the field of study, the level of study, the sex, and the number of students.
+
+In our case, we simply want to display the number of students, by year, sex and university. We thus will first need to summarize our data, before we can make a graph. After doing so, we will quickly display the first 5 rows of the data in a table
+
+```{r}
+# Summarize the data
+students_sum <- students %>%
+  group_by(PERIOD, UNI, SEX) %>%
+  summarise(TOTAL_STUDENTS = sum(VALUE)) %>%
+  mutate(SEX = as.factor(SEX))
+
+# Display the first 5 rows of the summarized data
+head(students_sum, 5)
+```
+
+## Displaying the data in a graph
+Now, we will create a figure to display the student numbers by year and sex. We will use the ggplot function, to create a line graph, colouring the data by university, and setting a shape by sex.
+
+```{r}
+#Create a first plot.
+ggplot(data = students_sum, aes(x = PERIOD, y = TOTAL_STUDENTS, colour = UNI, shape = SEX, group=paste0(UNI, SEX))) + geom_point() + geom_line() + 
+         theme_minimal() + labs(title = "Number of students in Swiss universities of applied sciences", x = "Year", y = "Number of students")
+```
+
+As you can see, the graph shows us the number of students, but it is far from ideal. The years blend over each other, and the colours are not very clear, as the plot assumes that the data for the Uni (which is numerically encoded) is continuous. We will therefore need to make a couple of small changes to the plot, to make it more interpretable. Additionally, we currently don't want to display the legend, as the data is encoded anyway.
+
+```{r}
+ggplot(data = students_sum, aes(x = PERIOD, y = TOTAL_STUDENTS, colour = as.character(UNI), shape = SEX, group=paste0(UNI, SEX))) + 
+  geom_point() + geom_line() + theme_minimal() + scale_colour_discrete() + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), legend.position="None") +
+  labs(title = "Number of students in Swiss universities of applied sciences", x = "Year", y = "Number of students")
+```
+
+
+## Additional comments
+
+This template is a quick start for making an HTML report, for example for displaying research results to report, or to create an easy to interpret document with supplementary materials for a publication. We have provided some basic layout and visual aspects, such as the ZHAW logo and the color scheme, but we encourage you to modify the template to your liking, and to create a report or template that suits your needs.
+
