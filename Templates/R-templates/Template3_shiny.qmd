@@ -1,0 +1,106 @@
+---
+title: "Shiny template"
+author: "Felix Moerman"
+format: 
+  html:
+    toc: true
+    toc-location: left
+    toc-title: "Table of Contents"
+    smooth-scroll: true
+    fontcolor: "#29588C"
+    mainfont: Calibri
+    monofont: Calibri
+server: shiny
+date: last-modified
+date-format: "DD-MM-YYYY"
+title-block-banner:  "darkgrey"
+theme: cosmo
+editor: visual
+number-sections: true
+css: "styles.css"
+bibliography: "example_bibtex.bib"
+csl: "nature.csl"
+abstract: "This template is a quick start for making a shiny app. It includes some basic formatting and visual aspects, as well as an abstract, a table of contents, a bibliography, some graphs, and several code and text blocks. This template is meant as a starting point to either create your own report, or even better your own template, adapted to your needs and tastes, to use in the future."
+---
+
+```{r}
+#| echo: false
+#| output: false
+
+library(tidyverse)
+library(shiny)
+```
+
+```{r}
+#| titlepanel: true
+
+tags$img(src='images/ZHAW_Logo.png')
+```
+
+
+## Interactive shiny reports
+Quarto can also be used to create interactive reports. This is done by adding the `server: shiny` option to the YAML header. This will enable the use of Shiny inputs and outputs in the document. To make such reports, you need some knowledge, on how the shiny package works. Briefly, shiny works by using three elements: input options, reactive data, and output. Input options are sliders, button, etc, that can be used to change which data should be used. The reactive data is a dataset, that changes based on those provided inputs. Finally, the output can be tables, figures, text, etc., that will be rendered using the reactive data.
+
+For
+
+## Input
+Here, we create a sidebar, where we can select whether we want to include all the data, or only a selection based on the SEX variable in the data. By default, all data is included.
+
+```{r}
+#| panel: sidebar
+selectInput(
+  inputId="SEX",
+  label="SEX",
+  choices=c("All", "1", "2"),
+  selected = "All",
+  multiple = FALSE,
+  selectize = TRUE
+)
+```
+
+## Reactive data
+Next, we have our reactive dataset, which will respond to the selection provided in the sidebar above. We will load a dataset to display in this app. For this example, we'll look at the data on the number of students in universities of applied sciences in Switzerland, as published on the website of the Swiss Federal Statistical Office (FSO). The data is available in from [this link](https://dam-api.bfs.admin.ch/hub/api/dam/assets/31826380/master), in case you wanted to download a copy. We will, however, load the data directly into this report. In the following code section, we load the data, and create a reactive dataset, based on the SEX input.
+```{r}
+#| context: server
+library(tidyverse)
+
+# Load the data
+students <- read.csv("https://dam-api.bfs.admin.ch/hub/api/dam/assets/31826380/master")
+
+#Summarize the data
+students_sum <- students %>%
+  group_by(PERIOD, UNI, SEX) %>%
+  summarise(TOTAL_STUDENTS = sum(VALUE)) %>%
+  mutate(SEX = as.factor(SEX))
+
+#Create the reactive data
+plotdata <- reactive({
+  if(input$SEX == "All") {
+    return(students_sum)
+  } else {
+    ret_dat <- filter(students_sum, SEX == input$SEX)
+    return(ret_dat)
+  }
+})
+```
+
+
+## Output figure
+
+Now, we will create a figure to display the student numbers by year and sex. We will use the ggplot function, to create a line graph, colouring the data by university, and setting a shape by sex. To do so, we will create a ggplot figure [@wickham_ggplot2_2016]. Finally, we can render this ggplot figure with the shiny function `renderPlot`.
+
+```{r}
+#| context: server
+library(tidyverse)
+output$studentPlot <- renderPlot({
+  ggplot(data = plotdata(), aes(x = PERIOD, y = TOTAL_STUDENTS, colour = as.character(UNI), shape = SEX, group=paste0(UNI, SEX))) + 
+  geom_point() + geom_line() + theme_minimal() + scale_colour_discrete() + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), legend.position="None") +
+  labs(title = "Number of students in Swiss universities of applied sciences", x = "Year", y = "Number of students")
+})
+```
+
+```{r}
+#| panel: fill
+plotOutput('studentPlot')
+```

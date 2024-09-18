@@ -23,8 +23,10 @@ abstract: "This template is a quick start for making an HTML report. It includes
 ---
 
 ## Preparing data and displaying it in a table
+
 ### Loading packages
-We will start by loading the necessary R-packages to run this report. Specifically, we will load the "tidyverse" package, which include the ggplot package [@wickham_ggplot2_2016], that we will use for data visualization. In this case, we do not want to see the code, nor the output, after we have finalised the report. Therefore, we will set the `echo` option to `false` for this code chunk, as well as set the output to `false`. 
+
+We will start by loading the necessary R-packages to run this report. Specifically, we will load the "tidyverse" package, which include the ggplot package [@wickham_ggplot2_2016], that we will use for data visualization. In this case, we do not want to see the code, nor the output, after we have finalised the report. Therefore, we will set the `echo` option to `false` for this code chunk, as well as set the output to `false`.
 
 ```{r}
 #| echo: false
@@ -33,8 +35,6 @@ We will start by loading the necessary R-packages to run this report. Specifical
 # Load the necessary packages
 library(tidyverse)
 ```
-
-
 
 ### Preparing the data
 
@@ -81,6 +81,7 @@ head(students_sum, 5)
 ```
 
 ## Displaying the data in a graph
+
 Now, we will create a figure to display the student numbers by year and sex. We will use the ggplot function, to create a line graph, colouring the data by university, and setting a shape by sex.
 
 ```{r}
@@ -98,8 +99,6 @@ ggplot(data = students_sum, aes(x = PERIOD, y = TOTAL_STUDENTS, colour = as.char
   labs(title = "Number of students in Swiss universities of applied sciences", x = "Year", y = "Number of students")
 ```
 
-
 ## Additional comments
 
 This template is a quick start for making an HTML report, for example for displaying research results to report, or to create an easy to interpret document with supplementary materials for a publication. We have provided some basic layout and visual aspects, such as the ZHAW logo and the color scheme, but we encourage you to modify the template to your liking, and to create a report or template that suits your needs.
-

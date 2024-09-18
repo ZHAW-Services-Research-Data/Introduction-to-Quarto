@@ -1,0 +1,72 @@
+---
+title: "Example presentation template"
+author: "Felix Moerman"
+format: 
+  pptx:
+    reference-doc: "example_ppt.pptx"
+editor: visual
+date: last-modified
+date-format: "DD-MM-YYYY"
+bibliography: "example_bibtex.bib"
+csl: "nature.csl"
+---
+
+## About the templates
+
+Quarto can be used to create powerpoint presentations. Although it is possible to create every visual element for your presentation from scratch, the big advantage of using quarto is that you can use an existing template presentation to start from.
+
+For example, this template reads in an example document that contains some basic formatting such as a ZHAW logo, text color, text size, and font. Although you can use the same example as we do, note that this is a very basic one, and we therefore recommend you, to use the corporate design template from your department.
+
+## Bullets
+
+ * You can create bullet points on your presentation with the following syntax:
+    * For unnumbered bullets, use a symbols such as the asterisk ("*") to start your bullets.
+        * Note that you can change in the YAML header, whether the bullets should be incremental or not.
+
+1. Numbered bullets can be created by using a number followed by a period (e.g. "1. ").
+    1. Note that, as discussed in previous materials, each numbered bullet list needs to start with the number 1.
+
+## Code
+
+We can also add our code to the presentation, depending on whether we enable the output or not:
+
+```{r}
+#| echo: false
+#| output: false
+# Disabled output
+# Load the necessary packages
+library(tidyverse)
+```
+
+```{r}
+#| echo: true
+# Output enabled
+
+# Load the data
+students <- read.csv("https://dam-api.bfs.admin.ch/hub/api/dam/assets/31826380/master")
+
+# Check the data
+if (nrow(students)> 1 & ncol(students) == 6) {
+  print("Data loaded successfully")
+} else {
+  print("Data not loaded successfully")
+}
+```
+
+## Figures
+We can also show the output from our figures in the presentation, for example here using the ggplot package [@wickham_ggplot2_2016]:
+
+```{r}
+#| echo: false
+# Summarize the data
+students_sum <- students %>%
+  group_by(PERIOD, UNI, SEX) %>%
+  summarise(TOTAL_STUDENTS = sum(VALUE)) %>%
+  mutate(SEX = as.factor(SEX))
+
+ggplot(data = students_sum, aes(x = PERIOD, y = TOTAL_STUDENTS, colour = as.character(UNI), shape = SEX, group=paste0(UNI, SEX))) + 
+  geom_point() + geom_line() + theme_minimal() + scale_colour_discrete() + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), legend.position="None") +
+  labs(title = "Number of students in Swiss universities of applied sciences", x = "Year", y = "Number of students")
+```
+
