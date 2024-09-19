@@ -9,6 +9,7 @@ date: last-modified
 date-format: "DD-MM-YYYY"
 bibliography: "example_bibtex.bib"
 csl: "nature.csl"
+## {background-image="background.png"}
 ---
 
 ## About the templates
@@ -19,12 +20,12 @@ For example, this template reads in an example document that contains some basic
 
 ## Bullets
 
- * You can create bullet points on your presentation with the following syntax:
-    * For unnumbered bullets, use a symbols such as the asterisk ("*") to start your bullets.
-        * Note that you can change in the YAML header, whether the bullets should be incremental or not.
+-   You can create bullet points on your presentation with the following syntax:
+    -   For unnumbered bullets, use a symbols such as the asterisk ("\*") to start your bullets.
+        -   Note that you can change in the YAML header, whether the bullets should be incremental or not.
 
-1. Numbered bullets can be created by using a number followed by a period (e.g. "1. ").
-    1. Note that, as discussed in previous materials, each numbered bullet list needs to start with the number 1.
+1.  Numbered bullets can be created by using a number followed by a period (e.g. "1. ").
+    1.  Note that, as discussed in previous materials, each numbered bullet list needs to start with the number 1.
 
 ## Code
 
@@ -54,6 +55,7 @@ if (nrow(students)> 1 & ncol(students) == 6) {
 ```
 
 ## Figures
+
 We can also show the output from our figures in the presentation, for example here using the ggplot package [@wickham_ggplot2_2016]:
 
 ```{r}
@@ -70,3 +72,5 @@ ggplot(data = students_sum, aes(x = PERIOD, y = TOTAL_STUDENTS, colour = as.char
   labs(title = "Number of students in Swiss universities of applied sciences", x = "Year", y = "Number of students")
 ```
 
+## Background images {background-image="images/ZHAW_Logo.png"}
+We can add a background image to slides, here for example the ZHAW logo.
