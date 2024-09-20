@@ -88,7 +88,7 @@ students_sum["SEX"] = students_sum["SEX"].astype(str)
 
 ## Output figure
 
-Now, we will create a figure to display the student numbers by year and sex. We will use the ggplot function, to create a line graph, colouring the data by university, and setting a shape by sex. To do so, we will create a ggplot figure [@wickham_ggplot2_2016]. Finally, we can render this ggplot figure with the shiny function `renderPlot`.
+Now, we will create a figure to display the student numbers by year and sex. Whereas in the R version, we used the ggplot function [@wickham_ggplot2_2016], we will here use the Seaborn package for Python to create a line graph, colouring the data by university, and setting a shape by sex. To do so, we will create a ggplot figure . Finally, we can render this Seaborn lineplot with the shiny functionality `@render.plot`.
 
 ```{python}
 def plot_func(inp_s):

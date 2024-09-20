@@ -87,7 +87,7 @@ students_sum.head(4)
 
 ## Displaying the data in a graph
 
-Now, we will create a figure to display the student numbers by year and sex. We will use the ggplot function, to create a line graph, colouring the data by university, and setting a shape by sex.
+Now, we will create a figure to display the student numbers by year and sex. We will use the lineplot function, to create a line graph, colouring the data by university, and setting a shape by sex.
 
 ```{python}
 #Create a first plot.
