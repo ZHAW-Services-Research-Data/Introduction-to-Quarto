@@ -1,0 +1,103 @@
+---
+title: "Example presentation template"
+author: "Felix Moerman"
+jupyter: python3
+format: 
+  pptx:
+    reference-doc: "example_ppt.pptx"
+editor: visual
+date: last-modified
+date-format: "DD-MM-YYYY"
+bibliography: "example_bibtex.bib"
+csl: "nature.csl"
+## {background-image="background.png"}
+---
+
+## About the templates
+
+Quarto can be used to create powerpoint presentations. Although it is possible to create every visual element for your presentation from scratch, the big advantage of using quarto is that you can use an existing template presentation to start from.
+
+For example, this template reads in an example document that contains some basic formatting such as a ZHAW logo, text color, text size, and font. Although you can use the same example as we do, note that this is a very basic one, and we therefore recommend you, to use the corporate design template from your department.
+
+## Bullets
+
+-   You can create bullet points on your presentation with the following syntax:
+    -   For unnumbered bullets, use a symbols such as the asterisk ("\*") to start your bullets.
+        -   Note that you can change in the YAML header, whether the bullets should be incremental or not.
+
+1.  Numbered bullets can be created by using a number followed by a period (e.g. "1. ").
+    1.  Note that, as discussed in previous materials, each numbered bullet list needs to start with the number 1.
+
+## Code
+
+We can also add our code to the presentation, depending on whether we enable the output or not:
+
+```{python}
+#| echo: false
+#| output: false
+
+# Load the necessary packages
+import pandas as pd
+import seaborn as sns
+import io
+import requests
+import matplotlib.pyplot as plt
+```
+
+```{python}
+#| echo: false
+
+# Load the data
+url = "https://dam-api.bfs.admin.ch/hub/api/dam/assets/31826380/master"
+s = requests.get(url).content
+students = pd.read_csv(io.StringIO(s.decode('utf-8')))
+
+# Check the data
+if students.shape[1] == 6 and students.shape[0]>1:
+  print("Data loaded successfully")
+else:
+  print("Data not loaded successfully")
+
+```
+
+## Figures
+
+We can also show the output from our figures in the presentation, for example here using the seaborn package for Python rather than the ggplot package [@wickham_ggplot2_2016] that we used in the R version:
+
+```{python}
+#| echo: false
+# Summarize the data
+students_sum = (students.groupby(['PERIOD', 'UNI', 'SEX'], as_index=False)
+                .agg(TOTAL_STUDENTS=('VALUE', 'sum'))
+                .assign(SEX=lambda df: df['SEX'].astype('category')))
+
+#Convert the variables to string type
+students_sum["UNI"] = students_sum["UNI"].astype(str)
+students_sum["SEX"] = students_sum["SEX"].astype(str)
+
+# Create the plot
+plt.figure(figsize=(10, 6))  # Adjust the figure size if necessary
+
+# Plot with seaborn
+sns.lineplot(data=students_sum, 
+             x='PERIOD', 
+             y='TOTAL_STUDENTS', 
+             hue='UNI', 
+             style='SEX', 
+             markers=True, 
+             dashes=False)
+
+# Customize the plot using matplotlib
+plt.title('Number of students in Swiss universities of applied sciences')
+plt.xlabel('Year')
+plt.ylabel('Number of students')
+
+# Rotate x-axis labels
+plt.xticks(rotation=90, ha='right')
+
+plt.show()
+```
+
+## Background images {background-image="images/ZHAW_Logo.png"}
+
+We can add a background image to slides, here for example the ZHAW logo.

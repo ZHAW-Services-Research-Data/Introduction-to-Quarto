@@ -1,0 +1,150 @@
+---
+title: "HTML Report Template"
+author: "Felix Moerman"
+jupyter: python3
+date: last-modified
+date-format: "DD-MM-YYYY"
+title-block-banner:  "darkgrey"
+format: 
+  html:
+    toc: true
+    toc-location: left
+    toc-title: "Table of Contents"
+    smooth-scroll: true
+    fontcolor: "#29588C"
+    mainfont: Calibri
+    monofont: Calibri
+theme: cosmo
+editor: visual
+number-sections: true
+css: styles.css
+bibliography: "example_bibtex.bib"
+csl: "nature.csl"
+abstract: "This template is a quick start for making an HTML report. It includes some basic formatting and visual aspects, as well as an abstract, a table of contents, a bibliography, some graphs, and several code and text blocks. This template is meant as a starting point to either create your own report, or even better your own template, adapted to your needs and tastes, to use in the future."
+---
+
+## Preparing data and displaying it in a table
+
+### Loading packages
+
+We will start by loading the necessary Python-packages to run this report. Specifically, we will load the "Pandas" package. Whereas in the R version, we used the tidyverse package for data handling, and the ggplot package [@wickham_ggplot2_2016] for data visualization, for the Python version we will use Pandas and Seaborn. In this case, we do not want to see the code, nor the output, after we have finalised the report. Therefore, we will set the `echo` option to `false` for this code chunk, as well as set the output to `false`.
+
+```{python}
+#| echo: false
+#| output: false
+
+# Load the necessary packages
+import pandas as pd
+import seaborn as sns
+import io
+import requests
+import matplotlib.pyplot as plt
+```
+
+### Preparing the data
+
+In a second step, we will load a dataset to display in this report. For this example, we'll look at the data on the number of students in universities of applied sciences in Switzerland, as published on the website of the Swiss Federal Statistical Office (FSO). The data is available in from [this link](https://dam-api.bfs.admin.ch/hub/api/dam/assets/31826380/master), in case you wanted to download a copy. We will, however, load the data directly into this report. In the following code section, we will simply download the data, and print a quick check to see if there are six columns, and at least 2 rows in the data. We will not print the code itself, as it is not so relevant for the report. The output will tell us however if the data loaded correctly or not.
+
+```{python}
+#| echo: false
+
+# Load the data
+url = "https://dam-api.bfs.admin.ch/hub/api/dam/assets/31826380/master"
+s = requests.get(url).content
+students = pd.read_csv(io.StringIO(s.decode('utf-8')))
+
+# Check the data
+if students.shape[1] == 6 and students.shape[0]>1:
+  print("Data loaded successfully")
+else:
+  print("Data not loaded successfully")
+
+```
+
+Next, we will have a quick look at the data. To do so, we will display the first 10 rows of the dataset, as well as look at the structure of the data.
+
+```{python}
+# Print the first 10 rows of the data
+students.head(10)
+
+# Look at the structure of the data
+students.dtypes
+```
+
+As you can see, the data contains six variables. The first variable (PERIOD), shows us the year the data was collected, and is a text (character) data type. The other remaining types are all numeric, and are encoded variables, showing us the University, the field of study, the level of study, the sex, and the number of students.
+
+In our case, we simply want to display the number of students, by year, sex and university. We thus will first need to summarize our data, before we can make a graph. After doing so, we will quickly display the first 5 rows of the data in a table
+
+```{python}
+# Summarize the data
+students_sum = (students.groupby(['PERIOD', 'UNI', 'SEX'], as_index=False)
+                .agg(TOTAL_STUDENTS=('VALUE', 'sum'))
+                .assign(SEX=lambda df: df['SEX'].astype('category')))
+
+# Display the first 5 rows of the summarized data
+students_sum.head(4)
+```
+
+## Displaying the data in a graph
+
+Now, we will create a figure to display the student numbers by year and sex. We will use the ggplot function, to create a line graph, colouring the data by university, and setting a shape by sex.
+
+```{python}
+#Create a first plot.
+
+# Create the plot
+plt.figure(figsize=(10, 6))  # Adjust the figure size if necessary
+
+# Plot with seaborn
+sns.lineplot(data=students_sum, 
+             x='PERIOD', 
+             y='TOTAL_STUDENTS', 
+             hue='UNI', 
+             style='SEX', 
+             markers=True, 
+             dashes=False)
+
+# Customize the plot using matplotlib
+plt.title('Number of students in Swiss universities of applied sciences')
+plt.xlabel('Year')
+plt.ylabel('Number of students')
+plt.grid(True)
+plt.tight_layout()
+
+# Display the plot
+plt.show()
+```
+
+As you can see, the graph shows us the number of students, but it is far from ideal. The years blend over each other, and the colours are not very clear, as the plot assumes that the data for the Uni (which is numerically encoded) is continuous. We will therefore need to make a couple of small changes to the plot, to make it more interpretable. Additionally, we currently don't want to display the legend, as the data is encoded anyway.
+
+```{python}
+#Convert the variables to string type
+students_sum["UNI"] = students_sum["UNI"].astype(str)
+students_sum["SEX"] = students_sum["SEX"].astype(str)
+
+# Create the plot
+plt.figure(figsize=(10, 6))  # Adjust the figure size if necessary
+
+# Plot with seaborn
+sns.lineplot(data=students_sum, 
+             x='PERIOD', 
+             y='TOTAL_STUDENTS', 
+             hue='UNI', 
+             style='SEX', 
+             markers=True, 
+             dashes=False)
+
+# Customize the plot using matplotlib
+plt.title('Number of students in Swiss universities of applied sciences')
+plt.xlabel('Year')
+plt.ylabel('Number of students')
+
+# Rotate x-axis labels
+plt.xticks(rotation=90, ha='right')
+
+plt.show()
+```
+
+## Additional comments
+
+This template is a quick start for making an HTML report, for example for displaying research results to report, or to create an easy to interpret document with supplementary materials for a publication. We have provided some basic layout and visual aspects, such as the ZHAW logo and the color scheme, but we encourage you to modify the template to your liking, and to create a report or template that suits your needs.

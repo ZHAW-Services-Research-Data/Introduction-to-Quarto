@@ -5,3 +5,7 @@ R_version/Exercise03_Header/Exercise03_files/
 R_version/Exercise03_Header/Exercise03_changed_files/
 Templates/R-templates/Template1_html-report_files/
 Templates/R-templates/Template3_shiny_files/
+Templates/Python-templates/Template1_html-report_files/
+Templates/Python-templates/Template3_shiny_files/
+Templates/Python-templates/__pycache__/
+*app.py
